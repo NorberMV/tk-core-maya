@@ -134,21 +134,27 @@ def process(
         logger.error(
             "Unexpected response from the Flow Production Tracking site. Expecting a JSON dict"
         )
-        raise AuthenticationError("Unexpected response from the Flow Production Tracking site")
+        raise AuthenticationError(
+            "Unexpected response from the Flow Production Tracking site"
+        )
 
     session_id = response.json.get("sessionRequestId")
     if not session_id:
         logger.error(
             "Unexpected response from the Flow Production Tracking site. Expecting a sessionRequestId item"
         )
-        raise AuthenticationError("Unexpected response from the Flow Production Tracking site")
+        raise AuthenticationError(
+            "Unexpected response from the Flow Production Tracking site"
+        )
 
     browser_url = response.json.get("url")
     if not browser_url:
         logger.error(
             "Unexpected response from the Flow Production Tracking site. Expecting a url item"
         )
-        raise AuthenticationError("Unexpected response from the Flow Production Tracking site")
+        raise AuthenticationError(
+            "Unexpected response from the Flow Production Tracking site"
+        )
 
     logger.debug(
         "Authentication Request ID: {session_id}".format(session_id=session_id)
@@ -235,7 +241,9 @@ def process(
             logger.error(
                 "Unexpected response from the Flow Production Tracking site. Expecting a JSON dict"
             )
-            raise AuthenticationError("Unexpected response from the Flow Production Tracking site")
+            raise AuthenticationError(
+                "Unexpected response from the Flow Production Tracking site"
+            )
 
         approved = response.json.get("approved", False)
 
@@ -251,7 +259,9 @@ def process(
             "Unexpected response from the Flow Production Tracking site",
             exc_info=True,
         )
-        raise AuthenticationError("Unexpected response from the Flow Production Tracking site")
+        raise AuthenticationError(
+            "Unexpected response from the Flow Production Tracking site"
+        )
 
     logger.debug("Session token: {sessionToken}".format(**response.json))
 
