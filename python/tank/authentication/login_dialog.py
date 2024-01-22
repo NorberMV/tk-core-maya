@@ -926,10 +926,7 @@ class LoginDialog(QtGui.QDialog):
                 self.ui.message,
                 "Authentication error - %s" % self._ulf2_task.exception,
             )
-            logger.debug(
-                "ULF2 authentication issue",
-                exc_info=self._ulf2_task.exception,
-            )
+
             self._ulf2_task = None
             return
 
@@ -972,6 +969,11 @@ class ULF2_AuthTask(QtCore.QThread):
                 keep_waiting_callback=self.should_continue,
             )
         except AuthenticationError as err:
+            logger.error("Authentication error - {}".format(err))
+            logger.debug(
+                "ULF2 authentication issue: {}".format(err.format()),
+                exc_info=err,
+            )
             self.exception = err
         except Exception:
             logger.exception("Unknown error from the App Session Launcher")
