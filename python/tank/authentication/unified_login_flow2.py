@@ -55,7 +55,7 @@ class AuthenticationError(errors.AuthenticationError):
 
         message = str(self)
         if info:
-            message += " ({})".format(",".join(info))
+            message += " ({})".format("; ".join(info))
 
         return message
 
