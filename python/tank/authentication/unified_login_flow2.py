@@ -235,7 +235,7 @@ def process(
             ))
 
             raise AuthenticationError(
-                "Request denied",
+                "Request redirected",
                 payload="HTTP Redirect to {}".format(location),
                 parent_exception=getattr(response, "exception", None),
             )
