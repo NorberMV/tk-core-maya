@@ -114,7 +114,6 @@ def process(
         MyRedirectHandler,
     ]
 
-    logger.debug("HTTP Proxy: {http_proxy}".format(http_proxy=http_proxy))
     if http_proxy:
         proxy_addr = _build_proxy_addr(http_proxy)
         sg_url_parsed = urllib.parse.urlparse(sg_url)
