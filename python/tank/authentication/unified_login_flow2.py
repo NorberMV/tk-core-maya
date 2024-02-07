@@ -59,38 +59,6 @@ class AuthenticationError(errors.AuthenticationError):
 
         return message
 
-class MyRedirectHandler(urllib.request.HTTPRedirectHandler):
-    """
-    The default urllib's HTTPRedirectHandler class raises an HTTPError on PUT
-    requests.
-    To be clear, the urllib.request module is not aware of PUT requests.
-
-    The Python request module has a different behavior: it does allow 30x
-    redirections on API PUT requests.
-    """
-
-    def redirect_request(self, req, fp, code, msg, hdrs, newurl):
-        logger.debug("Request redirected {req} {code} {msg} {newurl}".format(
-            req=req.full_url,
-            code=code,
-            msg=msg,
-            newurl=newurl,
-        ))
-
-        if code != 301 or req.get_method() != "PUT":
-            return super(MyRedirectHandler, self).redirect_request(req, fp, code, msg, hdrs, newurl)
-
-        # Monkey patch request get_method to change a prevent a HTTPError exception
-        back_req_get_method = req.get_method
-        req.get_method = lambda: "GET"
-        try:
-            next_req = super(MyRedirectHandler, self).redirect_request(req, fp, code, msg, hdrs, newurl)
-        finally:
-            req.get_method = back_req_get_method
-
-        next_req.get_method = lambda: "PUT" # force the method otherwise it's GET
-        return next_req
-
 
 def process(
     sg_url,
@@ -109,11 +77,7 @@ def process(
     assert callable(browser_open_callback)
     assert callable(keep_waiting_callback)
 
-    url_handlers = [
-        urllib.request.HTTPHandler,
-        MyRedirectHandler,
-    ]
-
+    url_handlers = [urllib.request.HTTPHandler]
     if http_proxy:
         proxy_addr = _build_proxy_addr(http_proxy)
         sg_url_parsed = urllib.parse.urlparse(sg_url)
