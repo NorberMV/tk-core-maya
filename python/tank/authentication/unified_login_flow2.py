@@ -188,13 +188,15 @@ def process(
 
     sleep_time = 2
     request_timeout = 180  # 5 minutes
-    request = urllib.request.Request(
-        urllib.parse.urljoin(
-            sg_url,
-            "/internal_api/app_session_request/{session_id}".format(
-                session_id=session_id,
-            ),
+    request_url = urllib.parse.urljoin(
+        sg_url,
+        "/internal_api/app_session_request/{session_id}".format(
+            session_id=session_id,
         ),
+    )
+
+    request = urllib.request.Request(
+        request_url,
         # method="PUT", # see bellow
         headers={
             "User-Agent": user_agent,
@@ -203,6 +205,13 @@ def process(
 
     # Hook for Python 2
     request.get_method = lambda: "PUT"
+
+    # custom
+    possible_urls = [request_url]
+    u1 = urllib.parse.urlparse(request_url)
+    if u1.scheme == "https" and not u1.port:
+        # odd case returning a URL with a custom port
+        possible_urls.append(u1._replace(netloc=u1.netloc + ":443").geturl())
 
     approved = False
     t0 = time.time()
@@ -233,6 +242,17 @@ def process(
 
         elif response_code_major == 3:
             location = response.headers.get("location", None)
+
+            if response.code == http_client.MOVED_PERMANENTLY and location in possible_urls:
+                # Odd case with a client environment sending a back a 301 when
+                # request not approved yet. But sending 200 and valid JSON once
+                # the request is approved
+                # The 301 redirected URL is the exact same except it forces the
+                # default port
+                #
+                # Temporarly consider it's 200 with approved false...
+                logger.debug("Request redirected to exact same URL. Consider not approved yet")
+                continue
 
             logger.debug("Request redirected: http code: {code}; redirect to: {location}".format(
                 code=response.code,
