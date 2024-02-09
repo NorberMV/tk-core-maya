@@ -355,7 +355,7 @@ def http_request(opener, req, max_attempts=4):
                 continue
 
             raise AuthenticationError(
-                "Unable to communicate with the SG site",
+                "Unable to communicate with the PTR site",
                 parent_exception=exc,
             )
 
@@ -371,7 +371,7 @@ def http_request(opener, req, max_attempts=4):
                 continue
 
             raise AuthenticationError(
-                "Unable to communicate with the SG site",
+                "Unable to communicate with the PTR site",
                 parent_exception=exc,
             )
 
