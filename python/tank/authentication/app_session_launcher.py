@@ -27,8 +27,8 @@ from .. import LogManager
 
 logger = LogManager.get_logger(__name__)
 
-PRODUCT_DEFAULT = "Flow Production Tracking Toolkit"
-PRODUCT_DESKTOP = "Flow Production Tracking Toolkit"
+PRODUCT_DEFAULT = "Flow Production Tracking"
+PRODUCT_DESKTOP = "Flow Production Tracking"
 
 
 class AuthenticationError(errors.AuthenticationError):
